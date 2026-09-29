@@ -6,7 +6,7 @@ on:
 
 jobs:
   backend:
-    name: Backend tests
+    name: Backend tests & migrations
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,6 +24,13 @@ jobs:
 
       - name: Run tests
         run: pytest
+
+      - name: Migration smoke test (empty DB -> upgrade -> downgrade)
+        run: |
+          DATABASE_URL=sqlite:////tmp/ci_migrate.db alembic upgrade head
+          DATABASE_URL=sqlite:////tmp/ci_migrate.db alembic current
+          DATABASE_URL=sqlite:////tmp/ci_migrate.db alembic downgrade base
+          DATABASE_URL=sqlite:////tmp/ci_migrate.db alembic upgrade head
 
   frontend:
     name: Frontend build

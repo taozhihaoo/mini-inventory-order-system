@@ -29,6 +29,11 @@ class Settings:
             )
         )
     )
+    log_level: str = os.getenv("LOG_LEVEL", "INFO").upper()
+
+    @property
+    def is_production(self) -> bool:
+        return self.app_env == "production"
 
 
 settings = Settings()

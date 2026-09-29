@@ -24,3 +24,12 @@ Thumbs.db
 # Python packaging artifacts
 *.egg-info/
 build/
+
+# Playwright E2E
+test-results/
+playwright-report/
+backend/e2e.db
+
+# scratch files
+output.txt
+*.log

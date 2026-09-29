@@ -12,6 +12,7 @@ import io
 from decimal import Decimal, InvalidOperation
 
 from fastapi import Response
+from pydantic import ValidationError as PydanticValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -161,10 +162,17 @@ def import_products(db: Session, *, content: bytes) -> ProductImportSummary:
                 )
             )
             imported += 1
-        except AppError as exc:
+        except (AppError, PydanticValidationError) as exc:
+            # Pydantic errors (e.g. >2 decimal places) are row-level problems
+            # too — they must skip the row, never crash the whole import.
             seen_skus.discard(sku)
+            message = (
+                str(exc.message) if isinstance(exc, AppError) else "; ".join(
+                    err.get("msg", "invalid value") for err in exc.errors()
+                )
+            )
             if len(errors) < MAX_ERRORS_REPORTED:
-                errors.append(ProductImportError(row=row_number, message=str(exc.message)))
+                errors.append(ProductImportError(row=row_number, message=message))
             skipped += 1
 
     return ProductImportSummary(

@@ -107,7 +107,7 @@ export function OrderNewPage() {
 
           <h2 style={{ margin: "18px 0 10px" }}>Items</h2>
           <div className="order-items-editor">
-            {lines.map((line) => {
+            {lines.map((line, index) => {
               const product = productById(line.productId);
               const quantity = Number(line.quantity);
               const lineTotal =
@@ -117,6 +117,7 @@ export function OrderNewPage() {
                   key={line.key}
                   className="form-grid"
                   style={{ alignItems: "end", marginBottom: 10 }}
+                  data-testid={`order-line-${index}`}
                 >
                   <Field label="Product" required>
                     <Select

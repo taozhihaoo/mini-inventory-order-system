@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 from app.api import dashboard, health, inventory, orders, products
 from app.api import categories, customers, suppliers
 from app.config import settings
-from app.database import Base, engine
+from app.migrations_runner import run_migrations
 from app.services.exceptions import AppError
 
 logger = logging.getLogger("shopstock")
@@ -26,16 +26,21 @@ logger = logging.getLogger("shopstock")
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     if settings.app_env != "test":
-        Base.metadata.create_all(bind=engine)
+        run_migrations()
     yield
 
 
 def create_app() -> FastAPI:
+    logging.basicConfig(
+        level=settings.log_level,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
     app = FastAPI(
         title=settings.app_name,
         version=settings.app_version,
         description="Small Business Inventory & Order Management System",
         lifespan=lifespan,
+        debug=False,  # never run debug mode, regardless of environment
     )
 
     app.add_middleware(

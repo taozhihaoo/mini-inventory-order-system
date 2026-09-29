@@ -29,6 +29,18 @@ export function StockOpModal({ product, initialOp = "IN", onClose, onDone }: Sto
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // The component stays mounted while closed (product === null); re-initialize
+  // the form each time it opens so the operation matches the clicked button.
+  const [openKey, setOpenKey] = useState("");
+  const nextOpenKey = product ? `${product.id}:${initialOp}` : "";
+  if (product && nextOpenKey !== openKey) {
+    setOpenKey(nextOpenKey);
+    setOp(initialOp);
+    setQuantity("");
+    setNote("");
+    setError(null);
+  }
+
   if (!product) return null;
 
   const quantityLabel = op === "ADJUST" ? "Counted quantity (new total)" : "Quantity";

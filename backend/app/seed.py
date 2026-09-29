@@ -20,8 +20,8 @@ from datetime import timedelta
 from decimal import Decimal
 
 from app.database import SessionLocal, is_sqlite
-from app.database import Base, engine
 from app.config import settings
+from app.migrations_runner import run_migrations
 from app.models import Customer, Order, OrderStatus, Product, StockMovement
 from app.services.customer_service import CustomerService
 from app.services.order_service import OrderService
@@ -51,7 +51,7 @@ def _reset_sqlite_file() -> None:
 
 
 def seed() -> None:
-    Base.metadata.create_all(bind=engine)
+    run_migrations()
     db = SessionLocal()
     try:
         product_count = db.query(Product).count()
