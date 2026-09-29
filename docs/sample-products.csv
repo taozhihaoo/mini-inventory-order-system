@@ -1,0 +1,6 @@
+sku,name,category,supplier,unit_price,cost_price,stock_quantity,low_stock_threshold
+IMP-1001,Wireless Mouse,Electronics,Bright Source Trading Co.,24.90,11.20,15,4
+IMP-1002,USB-C Cable 2m,Electronics,Bright Source Trading Co.,9.90,3.10,40,10
+IMP-1003,Desk Organizer,Storage,Northwood Wholesale,18.50,7.40,8,3
+IMP-1004,Bad Row Has No Price,,,,,5,1
+IMP-1005,Negative Stock Item,Electronics,,19.90,8.00,-3,1

@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    container_name: shopstock-backend
+    environment:
+      DATABASE_URL: sqlite:////data/shopstock.db
+      CORS_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
+    volumes:
+      - backend-data:/data
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: shopstock-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  backend-data:
